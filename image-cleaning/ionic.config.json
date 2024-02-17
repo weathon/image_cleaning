@@ -1,0 +1,7 @@
+{
+  "name": "image cleaning",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
