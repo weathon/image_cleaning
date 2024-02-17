@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import sqlite3
 import os 
+from fastapi.staticfiles import StaticFiles
+
+# app = FastAPI()
+
 
 con = sqlite3.connect("database.db")
 app = FastAPI()
@@ -15,7 +19,7 @@ app.add_middleware(
 )
 
 
-@app.get("/get_image_url")
+@app.get("/api/get_image_url")
 async def get_image():
     cur = con.cursor()
     res = cur.execute("SELECT filename FROM images WHERE accept IS NULL LIMIT 1")
@@ -24,7 +28,7 @@ async def get_image():
         return "finished"
     return ans
 
-@app.get("/reset_database")
+@app.get("/api/reset_database")
 async def reset_database():
     cur = con.cursor()
     filenames = [(i,) for i in os.listdir("images")]
@@ -33,19 +37,24 @@ async def reset_database():
     con.commit()
     return res 
 
-@app.post("/submit")
+@app.post("/api/submit")
 async def submit(filename, decision):
     cur = con.cursor()
     res = cur.execute("UPDATE images SET accept=? WHERE filename=?", (decision, filename))
     con.commit()
     return res 
 
-@app.get("/view_table")
+@app.get("/api/view_table")
 async def view_table():
     cur = con.cursor()
     res = cur.execute("SELECT * FROM images")
     return res 
 
-@app.get("/img")
+@app.get("/api/img")
 async def img(filename):
     return FileResponse("images/"+filename)
+
+app.mount("/", StaticFiles(directory="dist"), name="dist")
+@app.exception_handler(404)
+async def custom_404_handler(_, __):
+    return FileResponse('./dist/index.html')
