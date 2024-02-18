@@ -37,7 +37,8 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <img style={{ width: "100%"}} src={`${API}/img?filename=${imageUrl}`}></img>
+        <img style={{ width: "50%"}} src={`${API}/img?filename=${imageUrl}`}></img>
+        <img style={{ width: "50%"}} src={`https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${imageUrl.split("_")[0]}&t=l`}></img>
         <IonGrid>
           <IonRow>
             <IonCol size="6">
